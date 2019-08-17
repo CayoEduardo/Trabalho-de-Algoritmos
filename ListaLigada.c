@@ -36,8 +36,6 @@ typedef struct _No No;
 No* inicializa(No *head)
 {   
     head = (No*)malloc(sizeof(No));
-    head->ano = 0;
-
     head->prox = NULL;
     
     return(head);
@@ -53,12 +51,12 @@ int vazia(No *head)
 
 /* Cria No -
     Retorna o endereço para um Nó criado com os parametros escolhidos
-
+*/
 No* criaNo(char *nome, char *genero, int ano)
 {
     No* novo = (No*)malloc(sizeof(No));
 
-    if(novo == NULL)
+    if(!novo)
     {   
         printf("Espaco insuficiente na memoria!\n");
         exit(1);
@@ -74,21 +72,16 @@ No* criaNo(char *nome, char *genero, int ano)
     return(novo);
 }
 
-*/
-
 /* Insere -
     Insere o nó na Lista
 */
 int insere(No *head, char *nome, char *genero, int ano)
 {   
     //Lista vazia
-    if(head->prox == NULL)
+    if(vazia(head))
     {
-        No *novo = (No*)malloc(sizeof(No));
-        strcpy(novo->nome,nome);
-        strcpy(novo->genero,genero);
-        novo->ano = ano;
-        novo->prox = NULL;
+        No *novo = criaNo(nome,genero,ano);
+     
         head->prox = novo;
         
         return(1);
@@ -103,11 +96,8 @@ int insere(No *head, char *nome, char *genero, int ano)
         while(tmp->prox != NULL)
             tmp = tmp->prox;
 
-        tmp->prox = (No*)malloc(sizeof(No));
-        strcpy(tmp->prox->nome,nome);
-        strcpy(tmp->prox->genero,genero);
-        tmp->prox->ano = ano;
-        tmp->prox->prox = NULL;
+        tmp->prox = criaNo(nome, genero, ano);
+        
 
         return(1);
     }
@@ -138,14 +128,59 @@ void exibe(No *head)
 
 }
 
+/* Exclui -
+   Remove item da lista com base no nome.
+*/
+int exclui(No *head, int ano)
+{   
+    //Lista vazia
+    if(vazia(head))
+    {
+        printf("Lista vazia!\n");
+        return(0);
+    }
+
+    else
+    {   
+        //Dois nós para ter o ponteiro anterior.
+        No* tmp1 = head;
+        No* tmp2 = head->prox;
+
+        while(tmp2 != NULL && tmp2->ano != ano)
+        {
+            tmp1 = tmp1->prox;
+            tmp2 = tmp2->prox;
+        }
+
+            if(tmp2 == NULL)
+            {
+                printf("Nao encontrado!\n");
+                return(0);
+            }
+            else
+            {
+                No* aux = tmp2->prox;
+                free(tmp2);
+                tmp1->prox = aux;
+                printf("Remocao bem sucedida!");
+
+                return(1);   
+            }
+    }
+}
+
+
 int main()
 {   
     No *head = inicializa(head);
     int a = insere(head,"Alan wake","Action", 2010);
     int b = insere(head,"Half-Life","Action", 1997);
     int c = insere(head,"Pokemon","Adventure", 1994);
+    int d = insere(head, "Counter-Strike", "Action", 1998);
+    exclui(head, 1994);
     exibe(head);
     printf("\n %d %d %d\n", a,b,c);
+
 
     return(0);
 }
