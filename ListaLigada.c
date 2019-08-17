@@ -19,7 +19,9 @@
 
 //No
 struct _No
-{
+{   
+    char nome[100];
+    char genero[100];
     int ano;
 
     struct _No *prox;
@@ -77,13 +79,14 @@ No* criaNo(char *nome, char *genero, int ano)
 /* Insere -
     Insere o nó na Lista
 */
-int insere(No *head, int ano)
+int insere(No *head, char *nome, char *genero, int ano)
 {   
     //Lista vazia
     if(head->prox == NULL)
     {
         No *novo = (No*)malloc(sizeof(No));
-        
+        strcpy(novo->nome,nome);
+        strcpy(novo->genero,genero);
         novo->ano = ano;
         novo->prox = NULL;
         head->prox = novo;
@@ -101,6 +104,8 @@ int insere(No *head, int ano)
             tmp = tmp->prox;
 
         tmp->prox = (No*)malloc(sizeof(No));
+        strcpy(tmp->prox->nome,nome);
+        strcpy(tmp->prox->genero,genero);
         tmp->prox->ano = ano;
         tmp->prox->prox = NULL;
 
@@ -118,19 +123,29 @@ int insere(No *head, int ano)
 void exibe(No *head)
 {
     No* tmp;
+    tmp = head->prox;
 
-    for(tmp = head->prox; tmp != NULL; tmp = tmp->prox)
+    printf("\nLista: \n\n");
+
+    while(tmp)
     {
-        printf("%d\n", tmp->ano);
+        printf("Nome: %s\n", tmp->nome);
+        printf("Genero: %s\n", tmp->genero);
+        printf("Ano: %d\n", tmp->ano); 
+        printf("\n");
+        tmp = tmp->prox;  
     }
+
 }
 
 int main()
 {   
     No *head = inicializa(head);
-    int a = insere(head, 12);
-    int b = insere(head, 25);
+    int a = insere(head,"Alan wake","Action", 2010);
+    int b = insere(head,"Half-Life","Action", 1997);
+    int c = insere(head,"Pokemon","Adventure", 1994);
     exibe(head);
+    printf("\n %d %d %d\n", a,b,c);
 
     return(0);
 }
